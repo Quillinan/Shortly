@@ -5,12 +5,13 @@ export const urlsController = {
   shorten: async (req, res) => {
     try {
       const { url } = req.body;
+      const { id: idCreator } = req.user;
 
       const newShortUrl = nanoid(8);
 
       const insertQuery =
-        'INSERT INTO urls (url, "shortUrl") VALUES ($1, $2) RETURNING id, "shortUrl"';
-      const values = [url, newShortUrl];
+        'INSERT INTO urls (url, "shortUrl", "idCreator") VALUES ($1, $2, $3) RETURNING id, "shortUrl"';
+      const values = [url, newShortUrl, idCreator];
       const newUrl = await connection.query(insertQuery, values);
 
       const { id, shortUrl } = newUrl.rows[0];

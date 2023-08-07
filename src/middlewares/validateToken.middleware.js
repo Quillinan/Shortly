@@ -18,6 +18,7 @@ export function validateToken() {
       if (!user) {
         return res.status(401).json({ error: "Usuário inválido" });
       }
+      req.user = user;
 
       next();
     } catch (error) {
