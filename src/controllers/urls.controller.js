@@ -85,4 +85,46 @@ export const urlsController = {
       });
     }
   },
+  deleteUrl: async (req, res) => {
+    try {
+      const { id } = req.params;
+      const { id: idCreator } = req.user;
+
+      const queryCheckCreator = `
+        SELECT "idCreator" FROM urls
+        WHERE id = $1
+      `;
+      const resultCheckCreator = await connection.query(queryCheckCreator, [
+        id,
+      ]);
+
+      const urlCreatorId = resultCheckCreator.rows[0]?.idCreator;
+
+      if (!urlCreatorId || urlCreatorId !== idCreator) {
+        return res.status(401).json({ error: "Não autorizado" });
+      }
+
+      const queryCheckUrl = `
+        SELECT * FROM urls
+        WHERE id = $1
+      `;
+      const resultCheckUrl = await connection.query(queryCheckUrl, [id]);
+
+      if (resultCheckUrl.rows.length === 0) {
+        return res.status(404).json({ error: "URL não encontrada" });
+      }
+
+      const deleteQuery = `
+        DELETE FROM urls
+        WHERE id = $1
+      `;
+      await connection.query(deleteQuery, [id]);
+
+      res.status(204).end();
+    } catch (error) {
+      res
+        .status(500)
+        .json({ error: "Erro ao excluir a URL", details: error.message });
+    }
+  },
 };

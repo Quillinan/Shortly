@@ -20,4 +20,7 @@ urlsRouter.get("/:id", urlsController.getUrlById);
 // Rota para redirecionar para URL original
 urlsRouter.get("/open/:shortUrl", urlsController.openUrl);
 
+// Rota para deletar URL
+urlsRouter.delete("/:id", validateToken(), urlsController.deleteUrl);
+
 export default urlsRouter;
