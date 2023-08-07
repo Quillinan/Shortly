@@ -23,7 +23,7 @@ export const usersController = {
       const insertQuery =
         "INSERT INTO users (name, email, password) VALUES ($1, $2, $3) RETURNING *";
       const values = [name, email, hashedPassword];
-      const newUser = await connection.query(insertQuery, values);
+      await connection.query(insertQuery, values);
 
       res.status(201).json({ message: "Usuário criado com sucesso!" });
     } catch (err) {
