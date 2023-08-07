@@ -3,7 +3,7 @@ import bcrypt from "bcrypt";
 import { v4 as uuid } from "uuid";
 
 export const usersController = {
-  Signup: async (req, res) => {
+  signup: async (req, res) => {
     try {
       const { email } = req.body;
       const existingUser = await connection.query(
@@ -32,7 +32,7 @@ export const usersController = {
         .json({ error: "Erro ao criar usuário.", details: err.message });
     }
   },
-  Signin: async (req, res) => {
+  signin: async (req, res) => {
     try {
       const { email, password } = req.body;
       const existingUser = await connection.query(

@@ -11,7 +11,13 @@ urlsRouter.post(
   "/shorten",
   validateToken(),
   validateSchema(urlSchema),
-  urlsController.Shorten
+  urlsController.shorten
 );
+
+//Rota para obter URL pelo ID
+urlsRouter.get("/:id", urlsController.getUrlById);
+
+// Rota para redirecionar para URL original
+urlsRouter.get("/open/:shortUrl", urlsController.openUrl);
 
 export default urlsRouter;

@@ -12,8 +12,8 @@ router.get("/", (_, res) => {
   res.send("Shortly vive!!");
 });
 
-router.post("/signup", validateSchema(userSchema), usersController.Signup);
-router.post("/signin", validateSchema(loginSchema), usersController.Signin);
+router.post("/signup", validateSchema(userSchema), usersController.signup);
+router.post("/signin", validateSchema(loginSchema), usersController.signin);
 
 router.use("/urls", urlsRouter);
 
