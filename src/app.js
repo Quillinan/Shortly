@@ -2,7 +2,6 @@ import express from "express";
 import cors from "cors";
 import "dotenv/config";
 import router from "./routes/index.routes.js";
-import connection from "./database/database.connection.js";
 
 // Criação do app
 const app = express();

@@ -20,7 +20,7 @@ export function validateToken() {
 
       next();
     } catch (error) {
-      return res.status(422).json({ error: "Token inválido" });
+      return res.status(500).json({ error: "Token inválido" });
     }
   };
 }
