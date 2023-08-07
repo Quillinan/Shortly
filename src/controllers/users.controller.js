@@ -63,4 +63,52 @@ export const usersController = {
         .json({ error: "Erro ao fazer login.", details: err.message });
     }
   },
+  getUserUrls: async (req, res) => {
+    try {
+      const { id: userId } = req.user;
+
+      const queryUser = `
+        SELECT id, name FROM users
+        WHERE id = $1
+      `;
+      const resultUser = await connection.query(queryUser, [userId]);
+      const user = resultUser.rows[0];
+
+      if (!user) {
+        return res.status(404).json({ error: "Usuário não encontrado" });
+      }
+
+      const queryTotalVisitCount = `
+        SELECT SUM("visitCount") as "totalVisitCount" FROM urls
+        WHERE "idCreator" = $1
+      `;
+      const resultTotalVisitCount = await connection.query(
+        queryTotalVisitCount,
+        [userId]
+      );
+      const totalVisitCount =
+        resultTotalVisitCount.rows[0]?.totalVisitCount || 0;
+
+      const queryUserUrls = `
+        SELECT id, "shortUrl", url, "visitCount" FROM urls
+        WHERE "idCreator" = $1
+      `;
+      const resultUserUrls = await connection.query(queryUserUrls, [userId]);
+      const userUrls = resultUserUrls.rows;
+
+      const response = {
+        id: user.id,
+        name: user.name,
+        visitCount: totalVisitCount,
+        shortenedUrls: userUrls,
+      };
+
+      res.status(200).json(response);
+    } catch (error) {
+      res.status(500).json({
+        error: "Erro ao obter os dados do usuário",
+        details: error.message,
+      });
+    }
+  },
 };

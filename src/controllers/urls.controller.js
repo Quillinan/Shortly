@@ -70,14 +70,16 @@ export const urlsController = {
       }
 
       const fullUrl = urlDetails.url;
-      res.redirect(fullUrl);
 
       const updateQuery = `
         UPDATE urls
-        SET visitcount = visitcount + 1
+        SET "visitCount" = "visitCount" + 1
         WHERE "shortUrl" = $1
       `;
       await connection.query(updateQuery, [shortUrl]);
+
+      // Redirecione o usuário para a URL completa
+      res.redirect(fullUrl);
     } catch (error) {
       res.status(500).json({
         error: "Erro ao redirecionar para o URL completo",
@@ -125,6 +127,26 @@ export const urlsController = {
       res
         .status(500)
         .json({ error: "Erro ao excluir a URL", details: error.message });
+    }
+  },
+  getRanking: async (_, res) => {
+    try {
+      const queryRanking = `
+        SELECT u.id, u.name, COUNT(u2.id) AS "linksCount", SUM(u2."visitCount") AS "visitCount"
+        FROM users u
+        LEFT JOIN urls u2 ON u.id = u2."idCreator"
+        GROUP BY u.id, u.name
+        ORDER BY "visitCount" ASC
+        LIMIT 10
+      `;
+      const resultRanking = await connection.query(queryRanking);
+      const ranking = resultRanking.rows;
+
+      res.status(200).json(ranking);
+    } catch (error) {
+      res
+        .status(500)
+        .json({ error: "Erro ao obter o ranking", details: error.message });
     }
   },
 };

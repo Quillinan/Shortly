@@ -5,6 +5,8 @@ import { usersController } from "../controllers/users.controller.js";
 import { loginSchema } from "../schemas/login.schema.js";
 
 import urlsRouter from "./urls.routes.js";
+import usersRouter from "./users.routes.js";
+import { urlsController } from "../controllers/urls.controller.js";
 
 const router = Router();
 
@@ -16,5 +18,8 @@ router.post("/signup", validateSchema(userSchema), usersController.signup);
 router.post("/signin", validateSchema(loginSchema), usersController.signin);
 
 router.use("/urls", urlsRouter);
+router.use("/users", usersRouter);
+
+router.get("/ranking", urlsController.getRanking);
 
 export default router;
